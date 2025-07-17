@@ -1,0 +1,239 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+    --font-display: "Inter", system-ui, sans-serif;
+    --font-h1: "Inter", system-ui, sans-serif;
+    --font-h2: "Inter", system-ui, sans-serif;
+    --font-h3: "Inter", system-ui, sans-serif;
+    --font-body: "Inter", system-ui, sans-serif;
+    --font-caption: "Inter", system-ui, sans-serif;
+
+    /* Tailwind v4 color tokens */
+    --color-background: #0a0a0a;
+    --color-foreground: #ffffff;
+    --color-card: #1a1a1a;
+    --color-card-foreground: #ffffff;
+    --color-popover: #1a1a1a;
+    --color-popover-foreground: #ffffff;
+    --color-primary: #8b5cf6;
+    --color-primary-foreground: #ffffff;
+    --color-secondary: #262626;
+    --color-secondary-foreground: #ffffff;
+    --color-muted: #262626;
+    --color-muted-foreground: #a1a1aa;
+    --color-accent: #06b6d4;
+    --color-accent-foreground: #ffffff;
+    --color-destructive: #dc2626;
+    --color-destructive-foreground: #ffffff;
+    --color-border: #262626;
+    --color-input: #262626;
+    --color-ring: #8b5cf6;
+    --color-success: #10b981;
+    --color-success-foreground: #ffffff;
+    --color-neutral: #64748b;
+    --color-neutral-foreground: #ffffff;
+
+    --radius: 0.5rem;
+
+    --header-font-size-display: 3rem;
+    --header-font-size-h1: 2.5rem;
+    --header-font-size-h2: 2rem;
+    --header-font-size-h3: 1.5rem;
+    --header-font-size-body: 1rem;
+    --header-font-size-caption: 0.875rem;
+
+    --header-line-height-display: 1.1;
+    --header-line-height-h1: 1.2;
+    --header-line-height-h2: 1.3;
+    --header-line-height-h3: 1.4;
+    --header-line-height-body: 1.6;
+    --header-line-height-caption: 1.5;
+
+    --header-font-weight-display: 700;
+    --header-font-weight-h1: 600;
+    --header-font-weight-h2: 600;
+    --header-font-weight-h3: 600;
+    --header-font-weight-body: 400;
+    --header-font-weight-caption: 500;
+}
+
+@layer base {
+    * {
+        border-color: var(--color-border);
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        background-color: var(--color-background);
+        color: var(--color-foreground);
+        font-family: var(--font-body);
+        font-size: var(--header-font-size-body);
+        line-height: var(--header-line-height-body);
+        font-weight: var(--header-font-weight-body);
+        overflow-x: hidden;
+    }
+
+    .header-display {
+        font-family: var(--font-display);
+        font-size: var(--header-font-size-display);
+        line-height: var(--header-line-height-display);
+        font-weight: var(--header-font-weight-display);
+    }
+
+    .header-h1 {
+        font-family: var(--font-h1);
+        font-size: var(--header-font-size-h1);
+        line-height: var(--header-line-height-h1);
+        font-weight: var(--header-font-weight-h1);
+    }
+
+    .header-h2 {
+        font-family: var(--font-h2);
+        font-size: var(--header-font-size-h2);
+        line-height: var(--header-line-height-h2);
+        font-weight: var(--header-font-weight-h2);
+    }
+
+    .header-h3 {
+        font-family: var(--font-h3);
+        font-size: var(--header-font-size-h3);
+        line-height: var(--header-line-height-h3);
+        font-weight: var(--header-font-weight-h3);
+    }
+
+    .header-body {
+        font-family: var(--font-body);
+        font-size: var(--header-font-size-body);
+        line-height: var(--header-line-height-body);
+        font-weight: var(--header-font-weight-body);
+    }
+
+    .header-caption {
+        font-family: var(--font-caption);
+        font-size: var(--header-font-size-caption);
+        line-height: var(--header-line-height-caption);
+        font-weight: var(--header-font-weight-caption);
+    }
+
+    /* Responsive typography */
+    @media (min-width: 640px) {
+        .header-display {
+            font-size: 4rem;
+            line-height: 1.05;
+        }
+
+        .header-h1 {
+            font-size: 3rem;
+            line-height: 1.1;
+        }
+
+        .header-h2 {
+            font-size: 2.25rem;
+            line-height: 1.2;
+        }
+
+        .header-body {
+            font-size: 1.125rem;
+            line-height: 1.6;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .header-display {
+            font-size: 4.5rem;
+            line-height: 1.05;
+        }
+
+        .header-h1 {
+            font-size: 3.25rem;
+            line-height: 1.1;
+        }
+
+        .header-body {
+            font-size: 1.2rem;
+            line-height: 1.65;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .header-display {
+            font-size: 5.5rem;
+            line-height: 1.0;
+        }
+
+        .header-h1 {
+            font-size: 3.75rem;
+            line-height: 1.05;
+        }
+
+        .header-h2 {
+            font-size: 2.75rem;
+            line-height: 1.15;
+        }
+
+        .header-body {
+            font-size: 1.25rem;
+            line-height: 1.7;
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .header-display {
+            font-size: 6.5rem;
+            line-height: 0.95;
+        }
+
+        .header-h1 {
+            font-size: 4.25rem;
+            line-height: 1.0;
+        }
+
+        .header-body {
+            font-size: 1.3rem;
+            line-height: 1.75;
+        }
+    }
+
+    @media (min-width: 1536px) {
+        .header-display {
+            font-size: 7rem;
+            line-height: 0.9;
+        }
+
+        .header-h1 {
+            font-size: 4.5rem;
+            line-height: 0.95;
+        }
+    }
+}
+
+.dark {
+    --color-background: #0a0a0a;
+    --color-foreground: #ffffff;
+    --color-card: #1a1a1a;
+    --color-card-foreground: #ffffff;
+    --color-popover: #1a1a1a;
+    --color-popover-foreground: #ffffff;
+    --color-primary: #8b5cf6;
+    --color-primary-foreground: #ffffff;
+    --color-secondary: #262626;
+    --color-secondary-foreground: #ffffff;
+    --color-muted: #262626;
+    --color-muted-foreground: #a1a1aa;
+    --color-accent: #06b6d4;
+    --color-accent-foreground: #ffffff;
+    --color-destructive: #dc2626;
+    --color-destructive-foreground: #ffffff;
+    --color-border: #262626;
+    --color-input: #262626;
+    --color-ring: #8b5cf6;
+    --color-success: #10b981;
+    --color-success-foreground: #ffffff;
+    --color-neutral: #64748b;
+    --color-neutral-foreground: #ffffff;
+}
