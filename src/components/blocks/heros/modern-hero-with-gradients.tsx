@@ -25,25 +25,28 @@ export function ModernHeroWithGradients() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6 }}
-                            className="mb-8 md:mb-10"
+                            className="mb-6 md:mb-8 lg:mb-10"
                         >
                             <Link
                                 href="#quick-signup"
-                                className="group flex items-center gap-2 rounded-full border border-border bg-gradient-to-r from-primary/10 to-accent/10 backdrop-blur-sm px-4 py-2 text-center text-xs md:text-sm text-foreground transition-all duration-300 hover:from-primary/20 hover:to-accent/20 hover:shadow-lg hover:shadow-primary/25 hover:scale-105"
+                                className="group flex items-center gap-2 rounded-full border border-border bg-gradient-to-r from-primary/10 to-accent/10 backdrop-blur-sm px-3 py-2 md:px-4 md:py-2 text-center text-xs md:text-sm text-foreground transition-all duration-300 hover:from-primary/20 hover:to-accent/20 hover:shadow-lg hover:shadow-primary/25 hover:scale-105 active:scale-95 touch-manipulation"
                             >
-                                <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-primary animate-pulse" />
-                                <span className="font-medium">🎬 VFXB Beta Coming Q3 2025 - Join Early Access Now!</span>
-                                <ArrowRight className="h-3 w-3 md:h-4 md:w-4 text-primary group-hover:translate-x-1 transition-transform duration-300" />
+                                <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-primary animate-pulse flex-shrink-0" />
+                                <span className="font-medium text-center leading-tight">
+                                    <span className="hidden sm:inline">🎬 VFXB Beta Coming Q3 2025 - Join Early Access Now!</span>
+                                    <span className="sm:hidden">🎬 Join VFXB Beta - Q3 2025</span>
+                                </span>
+                                <ArrowRight className="h-3 w-3 md:h-4 md:w-4 text-primary group-hover:translate-x-1 transition-transform duration-300 flex-shrink-0" />
                             </Link>
                         </motion.div>
 
                         <motion.div
-                            className="text-center mb-10 md:mb-14"
+                            className="text-center mb-8 md:mb-12 lg:mb-14 px-2"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.5, delay: 0.2 }}
                         >
-                            <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold leading-tight mb-4 md:mb-6">
+                            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-4 md:mb-6 max-w-4xl mx-auto">
                                 <div className="bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                                     <StaggeredText text="One-Stop Video Creation Tool" delay={0.2} />
                                 </div>
@@ -53,19 +56,24 @@ export function ModernHeroWithGradients() {
                             </h1>
 
                             <motion.p
-                                className="mx-auto max-w-2xl text-center text-sm md:text-base lg:text-lg text-muted-foreground leading-relaxed"
+                                className="mx-auto max-w-2xl text-center text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed px-4"
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.4, delay: 0.6 }}
                             >
-                                VFXB empowers creators to build their brand with AI-powered video creation.
-                                Combining TikTok's dynamic format with YouTube's structure - perfect for
-                                gamers, VTubers, and tutorial creators looking to stand out.
+                                <span className="hidden sm:inline">
+                                    VFXB empowers creators to build their brand with AI-powered video creation.
+                                    Combining TikTok's dynamic format with YouTube's structure - perfect for
+                                    gamers, VTubers, and tutorial creators looking to stand out.
+                                </span>
+                                <span className="sm:hidden">
+                                    AI-powered video creation for creators. Perfect for gamers, VTubers, and tutorial creators.
+                                </span>
                             </motion.p>
                         </motion.div>
 
                         <motion.div
-                            className="flex flex-col items-center gap-4 mb-12 md:mb-16 sm:flex-row"
+                            className="flex flex-col items-center gap-3 sm:gap-4 mb-10 md:mb-14 lg:mb-16 sm:flex-row px-4"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4, delay: 0.8 }}
@@ -73,11 +81,11 @@ export function ModernHeroWithGradients() {
                             <PulsingCTAButton />
                             <Link
                                 href="#features"
-                                className="group flex items-center gap-2 rounded-full border border-border bg-card/50 backdrop-blur-sm px-6 py-3 text-center text-sm text-foreground transition-all duration-300 hover:bg-card/80 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:scale-105"
+                                className="group flex items-center gap-2 rounded-full border border-border bg-card/50 backdrop-blur-sm px-4 sm:px-6 py-3 text-center text-sm text-foreground transition-all duration-300 hover:bg-card/80 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:scale-105 active:scale-95 touch-manipulation min-h-[44px] w-full sm:w-auto justify-center"
                             >
-                                <Play className="h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
+                                <Play className="h-4 w-4 group-hover:scale-110 transition-transform duration-300 flex-shrink-0" />
                                 <span className="font-medium">Watch Demo</span>
-                                <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+                                <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300 flex-shrink-0" />
                             </Link>
                         </motion.div>
 
@@ -227,7 +235,7 @@ const StaggeredText = ({ text, delay = 0, className = "" }: { text: string; dela
         <span className={`inline-block ${className}`}>
       {letters.map((letter, index) => (
           <motion.span
-              key={index}
+              key={`letter-${index}-${letter}`}
               className="inline-block"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -264,11 +272,11 @@ const PulsingCTAButton = () => {
             />
             <Link
                 href="#quick-signup"
-                className="relative group flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-accent px-6 py-3 text-center text-sm text-primary-foreground font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-primary/50 hover:from-primary/90 hover:to-accent/90"
+                className="relative group flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-accent px-4 py-3 sm:px-6 sm:py-3 text-center text-sm sm:text-base text-primary-foreground font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-primary/50 hover:from-primary/90 hover:to-accent/90 min-h-[44px] touch-manipulation active:scale-95"
             >
-                <Zap className="h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
-                <span>Get Early Access</span>
-                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+                <Zap className="h-4 w-4 flex-shrink-0 group-hover:scale-110 transition-transform duration-300" />
+                <span className="whitespace-nowrap">Get Early Access</span>
+                <ArrowRight className="h-4 w-4 flex-shrink-0 group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
         </motion.div>
     );
@@ -277,38 +285,40 @@ const PulsingCTAButton = () => {
 const VideoPreviewMockup = () => {
     return (
         <motion.div
-            className="relative max-w-4xl mx-auto w-full"
+            className="relative max-w-4xl mx-auto w-full px-4"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.5 }}
         >
-            <div className="relative rounded-xl bg-gradient-to-br from-card/60 to-card/30 backdrop-blur-sm border border-border/40 p-6 md:p-8 shadow-xl shadow-primary/10">
+            <div className="relative rounded-xl bg-gradient-to-br from-card/60 to-card/30 backdrop-blur-sm border border-border/40 p-4 sm:p-6 md:p-8 shadow-xl shadow-primary/10">
                 {/* Better spaced window controls */}
-                <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="flex items-center gap-1.5 sm:gap-2">
+                            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500"></div>
+                            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
+                            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
                         </div>
-                        <div className="ml-4 flex items-center gap-3">
-                            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                                <Video className="h-3 w-3 text-white" />
+                        <div className="ml-2 sm:ml-4 flex items-center gap-2 sm:gap-3">
+                            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                                <Video className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-white" />
                             </div>
-                            <div className="text-sm text-foreground font-semibold">VFXB - Coming Soon</div>
+                            <div className="text-xs sm:text-sm text-foreground font-semibold hidden sm:block">VFXB - Coming Soon</div>
+                            <div className="text-xs text-foreground font-semibold sm:hidden">VFXB</div>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></div>
-                        <span className="text-sm text-muted-foreground">Pre-Launch</span>
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-yellow-500 animate-pulse"></div>
+                        <span className="text-xs sm:text-sm text-muted-foreground hidden sm:inline">Pre-Launch</span>
+                        <span className="text-xs text-muted-foreground sm:hidden">Beta</span>
                     </div>
                 </div>
 
                 {/* Better spaced timeline */}
-                <div className="bg-muted/15 rounded-lg p-4 md:p-6 mb-6 border border-border/20">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="text-sm font-semibold text-foreground">Launch Progress</div>
-                        <div className="px-3 py-1.5 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full text-sm text-primary font-medium border border-primary/30">
+                <div className="bg-muted/15 rounded-lg p-3 sm:p-4 md:p-6 mb-4 sm:mb-6 border border-border/20">
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                        <div className="text-xs sm:text-sm font-semibold text-foreground">Launch Progress</div>
+                        <div className="px-2 py-1 sm:px-3 sm:py-1.5 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full text-xs sm:text-sm text-primary font-medium border border-primary/30">
                             Q3 2024
                         </div>
                     </div>
@@ -323,7 +333,7 @@ const VideoPreviewMockup = () => {
                 </div>
 
                 {/* Better spaced feature grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
                     {[
                         { icon: Video, title: "AI Editor", description: "Coming soon", color: "from-primary/20 to-accent/20", iconColor: "text-primary" },
                         { icon: Bot, title: "Smart FX", description: "In development", color: "from-accent/20 to-primary/20", iconColor: "text-accent" },
@@ -332,17 +342,18 @@ const VideoPreviewMockup = () => {
                     ].map((feature, index) => (
                         <motion.div
                             key={feature.title}
-                            className="group bg-muted/15 rounded-lg p-4 hover:bg-muted/25 transition-all duration-300 cursor-pointer border border-border/20 hover:border-primary/30"
+                            className="group bg-muted/15 rounded-lg p-3 sm:p-4 hover:bg-muted/25 transition-all duration-300 cursor-pointer border border-border/20 hover:border-primary/30 touch-manipulation"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 2.5 + index * 0.1 }}
                             whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                         >
-                            <div className={`w-full h-14 bg-gradient-to-br ${feature.color} rounded-md mb-3 flex items-center justify-center group-hover:scale-105 transition-transform relative overflow-hidden`}>
-                                <feature.icon className={`h-6 w-6 ${feature.iconColor} relative z-10`} />
+                            <div className={`w-full h-12 sm:h-14 bg-gradient-to-br ${feature.color} rounded-md mb-2 sm:mb-3 flex items-center justify-center group-hover:scale-105 transition-transform relative overflow-hidden`}>
+                                <feature.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${feature.iconColor} relative z-10`} />
                             </div>
-                            <div className="text-sm font-medium text-foreground mb-1">{feature.title}</div>
-                            <div className="text-xs text-muted-foreground">{feature.description}</div>
+                            <div className="text-xs sm:text-sm font-medium text-foreground mb-1">{feature.title}</div>
+                            <div className="text-xs text-muted-foreground leading-tight">{feature.description}</div>
                         </motion.div>
                     ))}
                 </div>

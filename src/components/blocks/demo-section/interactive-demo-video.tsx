@@ -129,28 +129,38 @@ export default function InteractiveDemoVideo() {
                 </div>
 
                 {/* Floating Orbs */}
-                {[...Array(8)].map((_, i) => (
-                    <motion.div
-                        key={i}
-                        className="absolute rounded-full bg-gradient-to-br from-primary/20 to-accent/20 blur-xl"
-                        style={{
-                            width: `${Math.random() * 300 + 100}px`,
-                            height: `${Math.random() * 300 + 100}px`,
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                        }}
-                        animate={{
-                            x: [0, Math.random() * 200 - 100],
-                            y: [0, Math.random() * 200 - 100],
-                            scale: [1, 1.2, 1],
-                        }}
-                        transition={{
-                            duration: 10 + Math.random() * 10,
-                            repeat: Infinity,
-                            repeatType: "reverse",
-                        }}
-                    />
-                ))}
+                {[...Array(8)].map((_, i) => {
+                    // Use deterministic values based on index to avoid hydration mismatch
+                    const size = 100 + (i * 37) % 300; // Deterministic size
+                    const left = (i * 73) % 100; // Deterministic left position
+                    const top = (i * 127) % 100; // Deterministic top position
+                    const moveX = ((i % 2) * 2 - 1) * (50 + (i * 23) % 50); // Deterministic X movement
+                    const moveY = ((i % 3) * 2 - 1) * (50 + (i * 31) % 50); // Deterministic Y movement
+                    const duration = 10 + (i % 10); // Deterministic duration
+                    
+                    return (
+                        <motion.div
+                            key={i}
+                            className="absolute rounded-full bg-gradient-to-br from-primary/20 to-accent/20 blur-xl"
+                            style={{
+                                width: `${size}px`,
+                                height: `${size}px`,
+                                left: `${left}%`,
+                                top: `${top}%`,
+                            }}
+                            animate={{
+                                x: [0, moveX],
+                                y: [0, moveY],
+                                scale: [1, 1.2, 1],
+                            }}
+                            transition={{
+                                duration: duration,
+                                repeat: Infinity,
+                                repeatType: "reverse",
+                            }}
+                        />
+                    );
+                })}
             </div>
 
             {/* Background Gradient Movement */}
@@ -276,7 +286,7 @@ export default function InteractiveDemoVideo() {
                                 {/* Floating Feature Callouts */}
                                 {features.map((feature, index) => (
                                     <motion.div
-                                        key={index}
+                                        key={`feature-${feature.title}-${index}`}
                                         className="absolute z-20"
                                         style={{
                                             left: `${feature.position.x}%`,
@@ -442,7 +452,7 @@ export default function InteractiveDemoVideo() {
                     <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
                         {demoScenarios.map((scenario, index) => (
                             <motion.div
-                                key={index}
+                                key={`scenario-${scenario.title}-${index}`}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                                 transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}

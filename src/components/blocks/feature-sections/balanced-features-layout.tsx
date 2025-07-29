@@ -232,7 +232,7 @@ const VoiceSynthesisPreview = () => {
             <div className="flex items-end gap-1 h-12">
                 {waveform.map((height, i) => (
                     <motion.div
-                        key={i}
+                        key={`waveform-bar-${i}`}
                         className="w-1 bg-gradient-to-t from-purple-600 to-cyan-400 rounded-full"
                         style={{ height: `${height}%` }}
                         animate={{ height: `${height}%` }}
@@ -290,32 +290,38 @@ const SmartResizingPreview = () => {
 };
 
 const MotionTrackingPreview = () => {
-    const [trackedPoints, setTrackedPoints] = useState<{x: number, y: number}[]>([]);
+    const [trackedPoints, setTrackedPoints] = useState<{x: number, y: number, id: number}[]>([]);
+    const [pointCounter, setPointCounter] = useState(0);
 
     useEffect(() => {
         const timer = setInterval(() => {
             setTrackedPoints(prev => {
+                setPointCounter(counter => counter + 1);
+                // Use deterministic positioning based on counter to avoid hydration issues
+                const angle = (pointCounter * 0.1) % (2 * Math.PI);
+                const radius = 30 + (pointCounter % 20);
                 const newPoint = {
-                    x: Math.random() * 100,
-                    y: Math.random() * 100
+                    x: 50 + Math.cos(angle) * radius,
+                    y: 50 + Math.sin(angle) * radius,
+                    id: pointCounter
                 };
                 return [...prev, newPoint].slice(-10);
             });
         }, 200);
 
         return () => clearInterval(timer);
-    }, []);
+    }, [pointCounter]);
 
     return (
         <div className="space-y-3">
             <div className="relative h-24 bg-gray-900 rounded-lg overflow-hidden">
                 {trackedPoints.map((point, i) => (
                     <motion.div
-                        key={i}
+                        key={point.id}
                         className="absolute w-2 h-2 bg-cyan-400 rounded-full"
                         style={{
-                            left: `${point.x}%`,
-                            top: `${point.y}%`
+                            left: `${Math.max(0, Math.min(100, point.x))}%`,
+                            top: `${Math.max(0, Math.min(100, point.y))}%`
                         }}
                         animate={{
                             scale: [1, 1.5, 1],

@@ -167,8 +167,7 @@ export const AIFeaturesScrollCarousel = () => {
             y: 0,
             opacity: 1,
             transition: {
-                duration: 0.8,
-                ease: "easeOut"
+                duration: 0.8
             }
         }
     };
@@ -227,7 +226,7 @@ export const AIFeaturesScrollCarousel = () => {
                         <Card className="group relative overflow-hidden bg-transparent hover:bg-background/60 border-border/20 hover:border-primary/30 transition-all duration-500 hover:shadow-xl w-72 sm:w-80 lg:w-96">
                             <motion.div
                                 whileHover={{ y: -4 }}
-                                transition={{ duration: 0.4, ease: "easeOut" }}
+                                transition={{ duration: 0.4 }}
                                 className="relative"
                             >
                                 {/* Enhanced Image Container */}
@@ -295,7 +294,7 @@ export const AIFeaturesScrollCarousel = () => {
                                     className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
                                     initial={{ x: '-100%' }}
                                     whileHover={{ x: '100%' }}
-                                    transition={{ duration: 1.2, ease: "easeInOut" }}
+                                    transition={{ duration: 1.2 }}
                                 />
                             </motion.div>
                         </Card>

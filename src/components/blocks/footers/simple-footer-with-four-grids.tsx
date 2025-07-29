@@ -2,13 +2,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Facebook, Instagram, Twitter, Linkedin, Mail, ArrowRight, Video, Zap, Star, Send } from "lucide-react";
 
 export function SimpleFooterWithFourGrids() {
     const [email, setEmail] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [particles, setParticles] = useState<Array<{x: number, y: number, duration: number}>>([]);
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     const productLinks = [
         {
@@ -105,31 +111,63 @@ export function SimpleFooterWithFourGrids() {
 
     const currentYear = new Date().getFullYear();
 
+    // Initialize particles on client side only to avoid hydration mismatch
+    useEffect(() => {
+        const generateParticles = () => {
+            const newParticles = [];
+            for (let i = 0; i < 20; i++) {
+                // Use deterministic seed based on index for consistent positioning
+                const seed = i * 137.508; // Golden angle for better distribution
+                newParticles.push({
+                    x: (Math.sin(seed) * 0.5 + 0.5) * Math.min(window.innerWidth, 1200),
+                    y: (Math.cos(seed) * 0.5 + 0.5) * Math.min(window.innerHeight, 600),
+                    duration: 15 + (i % 10) // Deterministic duration
+                });
+            }
+            setParticles(newParticles);
+        };
+
+        generateParticles();
+        
+        // Regenerate on resize
+        const handleResize = () => generateParticles();
+        window.addEventListener('resize', handleResize);
+        
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return (
         <div className="bg-background border-t border-border px-4 sm:px-6 lg:px-8 py-20 w-full relative overflow-hidden">
             {/* Floating particles background */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {[...Array(20)].map((_, i) => (
-                    <motion.div
-                        key={i}
-                        className="absolute w-1 h-1 bg-primary/20 rounded-full"
-                        initial={{
-                            x: Math.random() * (typeof window !== 'undefined' ? Math.min(window.innerWidth, 1200) : 1000),
-                            y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
-                            opacity: 0
-                        }}
-                        animate={{
-                            x: Math.random() * (typeof window !== 'undefined' ? Math.min(window.innerWidth, 1200) : 1000),
-                            y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
-                            opacity: [0, 1, 0]
-                        }}
-                        transition={{
-                            duration: Math.random() * 10 + 10,
-                            repeat: Infinity,
-                            repeatType: "loop"
-                        }}
-                    />
-                ))}
+                {isClient && particles.map((particle, i) => {
+                    // Generate deterministic target positions
+                    const targetSeed = (i + 1) * 137.508;
+                    const targetX = (Math.sin(targetSeed) * 0.5 + 0.5) * Math.min(typeof window !== 'undefined' ? window.innerWidth : 1200, 1200);
+                    const targetY = (Math.cos(targetSeed) * 0.5 + 0.5) * Math.min(typeof window !== 'undefined' ? window.innerHeight : 600, 600);
+                    
+                    return (
+                        <motion.div
+                            key={i}
+                            className="absolute w-1 h-1 bg-primary/20 rounded-full"
+                            initial={{
+                                x: particle.x,
+                                y: particle.y,
+                                opacity: 0
+                            }}
+                            animate={{
+                                x: targetX,
+                                y: targetY,
+                                opacity: [0, 1, 0]
+                            }}
+                            transition={{
+                                duration: particle.duration,
+                                repeat: Infinity,
+                                repeatType: "loop"
+                            }}
+                        />
+                    );
+                })}
             </div>
 
             <div className="max-w-7xl mx-auto relative z-10">
@@ -219,7 +257,7 @@ export function SimpleFooterWithFourGrids() {
                             <h3 className="text-foreground font-semibold text-lg">Product</h3>
                             <ul className="space-y-3">
                                 {productLinks.map((link, idx) => (
-                                    <li key={idx}>
+                                    <li key={`product-${link.title}-${idx}`}>
                                         <Link
                                             href={link.href}
                                             className="text-muted-foreground hover:text-primary transition-colors duration-300 group flex items-center"
@@ -242,7 +280,7 @@ export function SimpleFooterWithFourGrids() {
                             <h3 className="text-foreground font-semibold text-lg">Company</h3>
                             <ul className="space-y-3">
                                 {companyLinks.map((link, idx) => (
-                                    <li key={idx}>
+                                    <li key={`company-${link.title}-${idx}`}>
                                         <Link
                                             href={link.href}
                                             className="text-muted-foreground hover:text-primary transition-colors duration-300 group flex items-center"
@@ -265,7 +303,7 @@ export function SimpleFooterWithFourGrids() {
                             <h3 className="text-foreground font-semibold text-lg">Support</h3>
                             <ul className="space-y-3">
                                 {supportLinks.map((link, idx) => (
-                                    <li key={idx}>
+                                    <li key={`support-${link.title}-${idx}`}>
                                         <Link
                                             href={link.href}
                                             className="text-muted-foreground hover:text-primary transition-colors duration-300 group flex items-center"
@@ -288,7 +326,7 @@ export function SimpleFooterWithFourGrids() {
                             <h3 className="text-foreground font-semibold text-lg">Legal</h3>
                             <ul className="space-y-3">
                                 {legalLinks.map((link, idx) => (
-                                    <li key={idx}>
+                                    <li key={`legal-${link.title}-${idx}`}>
                                         <Link
                                             href={link.href}
                                             className="text-muted-foreground hover:text-primary transition-colors duration-300 group flex items-center"

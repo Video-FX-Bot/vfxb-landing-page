@@ -15,37 +15,56 @@ const ParticleSystem = () => {
         size: number
         opacity: number
     }>>([])
+    const [isClient, setIsClient] = useState(false)
 
-    const createParticle = useCallback((id: number) => ({
-        id,
-        x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
-        y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        size: Math.random() * 3 + 1,
-        opacity: Math.random() * 0.8 + 0.2
-    }), [])
+    const createParticle = useCallback((id: number) => {
+        // Use deterministic seed based on id for consistent positioning
+        const seed = id * 137.508; // Golden angle for better distribution
+        const normalizedSin = (Math.sin(seed) + 1) / 2; // Normalize to 0-1
+        const normalizedCos = (Math.cos(seed) + 1) / 2; // Normalize to 0-1
+        const normalizedSin2 = (Math.sin(seed * 2) + 1) / 2;
+        const normalizedCos2 = (Math.cos(seed * 2) + 1) / 2;
+        
+        return {
+            id,
+            x: normalizedSin * (typeof window !== 'undefined' ? window.innerWidth : 1000),
+            y: normalizedCos * (typeof window !== 'undefined' ? window.innerHeight : 600),
+            vx: (normalizedSin2 - 0.5) * 0.5,
+            vy: (normalizedCos2 - 0.5) * 0.5,
+            size: (normalizedSin * 2) + 1,
+            opacity: (normalizedCos * 0.6) + 0.2
+        }
+    }, [])
 
     useEffect(() => {
-        // Initialize particles
+        setIsClient(true)
+        // Initialize particles only on client side
         const initialParticles = Array.from({ length: 50 }, (_, i) => createParticle(i))
         setParticles(initialParticles)
 
         // Animation loop
         const animate = () => {
-            setParticles(prev => prev.map(particle => ({
-                ...particle,
-                x: particle.x + particle.vx,
-                y: particle.y + particle.vy,
-                // Wrap around screen
-                x: particle.x > (typeof window !== 'undefined' ? window.innerWidth : 1000) ? 0 : particle.x < 0 ? (typeof window !== 'undefined' ? window.innerWidth : 1000) : particle.x,
-                y: particle.y > (typeof window !== 'undefined' ? window.innerHeight : 600) ? 0 : particle.y < 0 ? (typeof window !== 'undefined' ? window.innerHeight : 600) : particle.y
-            })))
+            setParticles(prev => prev.map(particle => {
+                const newX = particle.x + particle.vx
+                const newY = particle.y + particle.vy
+                const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1000
+                const screenHeight = typeof window !== 'undefined' ? window.innerHeight : 600
+                
+                return {
+                    ...particle,
+                    x: newX > screenWidth ? 0 : newX < 0 ? screenWidth : newX,
+                    y: newY > screenHeight ? 0 : newY < 0 ? screenHeight : newY
+                }
+            }))
         }
 
         const interval = setInterval(animate, 16) // 60fps
         return () => clearInterval(interval)
     }, [createParticle])
+
+    if (!isClient) {
+        return null // Don't render on server to avoid hydration mismatch
+    }
 
     return (
         <div className="absolute inset-0 pointer-events-none">

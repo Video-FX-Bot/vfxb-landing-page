@@ -185,8 +185,7 @@ export const TestimonialsSection = () => {
                     }}
                     transition={{
                         duration: 20,
-                        repeat: Infinity,
-                        ease: "easeInOut"
+                        repeat: Infinity
                     }}
                 />
                 <motion.div
@@ -198,8 +197,7 @@ export const TestimonialsSection = () => {
                     }}
                     transition={{
                         duration: 25,
-                        repeat: Infinity,
-                        ease: "easeInOut"
+                        repeat: Infinity
                     }}
                 />
             </div>
@@ -316,7 +314,7 @@ export const TestimonialsSection = () => {
                                         <div className="flex items-center mb-4">
                                             {[...Array(5)].map((_, i) => (
                                                 <Star
-                                                    key={i}
+                                                    key={`star-${testimonial.id}-${i}`}
                                                     className={`w-4 h-4 ${
                                                         i < testimonial.rating
                                                             ? 'fill-primary text-primary'

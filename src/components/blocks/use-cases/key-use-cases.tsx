@@ -108,7 +108,6 @@ const cardVariants = {
         y: 0,
         scale: 1,
         transition: {
-            type: "spring",
             stiffness: 100,
             damping: 15,
             duration: 0.8
@@ -216,7 +215,7 @@ export const KeyUseCases: React.FC = () => {
                                         <div className="space-y-2">
                                             {useCase.features.slice(0, 3).map((feature, index) => (
                                                 <motion.div
-                                                    key={index}
+                                                    key={`${useCase.id}-feature-${index}-${feature.slice(0, 10)}`}
                                                     initial={{ opacity: 0, x: -20 }}
                                                     whileInView={{ opacity: 1, x: 0 }}
                                                     viewport={{ once: true }}
@@ -241,7 +240,7 @@ export const KeyUseCases: React.FC = () => {
                                     {/* Stats */}
                                     <div className="grid grid-cols-2 gap-4">
                                         {useCase.stats.map((stat, index) => (
-                                            <div key={index} className="text-center p-3 rounded-lg bg-background/50 group-hover:bg-background/80 transition-colors duration-300">
+                                            <div key={`${useCase.id}-stat-${stat.label}-${index}`} className="text-center p-3 rounded-lg bg-background/50 group-hover:bg-background/80 transition-colors duration-300">
                                                 <div className="text-lg font-bold text-primary group-hover:text-accent transition-colors duration-300">
                                                     {stat.value}
                                                 </div>
@@ -287,7 +286,7 @@ export const KeyUseCases: React.FC = () => {
                             { icon: <Zap className="w-6 h-6" />, value: "1M+", label: "Videos Created" }
                         ].map((stat, index) => (
                             <motion.div
-                                key={index}
+                                key={`success-stat-${stat.label}-${index}`}
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 whileInView={{ opacity: 1, scale: 1 }}
                                 viewport={{ once: true }}

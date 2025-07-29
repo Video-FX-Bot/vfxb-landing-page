@@ -32,8 +32,7 @@ export const SectionTransition: React.FC<SectionTransitionProps> = ({
                 duration: 4,
                 delay: i * 0.2,
                 repeat: Infinity,
-                repeatDelay: 3,
-                ease: "easeInOut"
+                repeatDelay: 3
             }
         })
     };
@@ -44,8 +43,7 @@ export const SectionTransition: React.FC<SectionTransitionProps> = ({
             pathLength: 1,
             opacity: 1,
             transition: {
-                duration: 2,
-                ease: "easeInOut"
+                duration: 2
             }
         }
     };
@@ -58,8 +56,7 @@ export const SectionTransition: React.FC<SectionTransitionProps> = ({
             scale: 1,
             transition: {
                 duration: 20,
-                repeat: Infinity,
-                ease: "linear"
+                repeat: Infinity
             }
         }
     };
@@ -162,8 +159,7 @@ export const SectionTransition: React.FC<SectionTransitionProps> = ({
                                 duration: 2,
                                 delay: i * 0.1,
                                 repeat: Infinity,
-                                repeatDelay: 1,
-                                ease: "easeInOut"
+                                repeatDelay: 1
                             }}
                         />
                     ))}
@@ -181,8 +177,7 @@ export const SectionTransition: React.FC<SectionTransitionProps> = ({
                 transition={{
                     duration: 3,
                     repeat: Infinity,
-                    repeatDelay: 2,
-                    ease: "easeInOut"
+                    repeatDelay: 2
                 }}
                 style={{ transform: 'translate(-50%, -50%)' }}
             />

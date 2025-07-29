@@ -210,7 +210,6 @@ export const EmailSignupWaitlist = () => {
                                         }}
                                         transition={{
                                             duration: 3,
-                                            ease: "easeOut",
                                             delay: Math.random() * 2,
                                         }}
                                     />
