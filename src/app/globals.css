@@ -78,6 +78,11 @@
         overflow-x: hidden;
     }
 
+    /* Utility to ensure custom radial gradients render on all sections */
+    .bg-radial-support {
+        background-image: radial-gradient(closest-side, transparent 0%, transparent 100%);
+    }
+
     .header-display {
         font-family: var(--font-display);
         font-size: var(--header-font-size-display);

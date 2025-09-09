@@ -11,6 +11,7 @@ import { SectionNavigation } from "@/components/ui/section-navigation";
 // Dynamic imports for performance optimization
 import { lazy, Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import FounderSpotlight from "@/components/blocks/founder-section/founder-spotlight";
 
 // Lazy load components that are not immediately visible
 const InteractiveDemoVideo = lazy(() => import("@/components/blocks/demo-section/interactive-demo-video"));
@@ -48,6 +49,8 @@ export default function Home() {
                 <SectionTransition />
             </section>
 
+            
+
             {/* Features Section - Important for user engagement */}
             <section id="features" className="relative">
                 <FeaturesLayout />
@@ -76,9 +79,15 @@ export default function Home() {
                 <SectionTransition />
             </section>
 
+            {/* Founder & CEO spotlight */}
+            <section id="founder" className="relative bg-radial-support">
+                <FounderSpotlight />
+                <SectionTransition />
+            </section>
+
             <section id="team" className="relative">
                 <Suspense fallback={<SectionSkeleton />}>
-                    <OurTeam />
+                    <OurTeam />-
                 </Suspense>
                 <SectionTransition />
             </section>
