@@ -87,7 +87,7 @@ export default function Home() {
 
             <section id="team" className="relative">
                 <Suspense fallback={<SectionSkeleton />}>
-                    <OurTeam />-
+                    <OurTeam enableSlider />
                 </Suspense>
                 <SectionTransition />
             </section>
