@@ -153,7 +153,7 @@ export const KeyUseCases: React.FC = () => {
             />
 
             {/* Use Cases Grid */}
-            <div className="max-w-7xl mx-auto px-4 pb-20">
+            <div className="max-w-7xl mx-auto px-4 pb-20 pt-9">
                 <motion.div
                     variants={containerVariants}
                     initial="hidden"
