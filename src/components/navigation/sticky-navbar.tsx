@@ -115,10 +115,10 @@ export const StickyNavigation = () => {
                             })}
                         </div>
 
-                        {/* Enhanced CTA Buttons - Both lead to waitlist */}
+                        {/* Enhanced CTA Buttons - Try Online leads to app, Download leads to waitlist */}
                         <div className="hidden md:flex items-center gap-3">
                             <Button
-                                onClick={scrollToWaitlist}
+                                onClick={() => window.open('https://app.vfxb.com/', '_blank')}
                                 variant="outline"
                                 className="relative overflow-hidden bg-gradient-to-r from-cyan-500/10 to-purple-500/10 hover:from-cyan-500/20 hover:to-purple-500/20 border border-cyan-500/30 text-foreground hover:text-cyan-400 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 px-6 py-3"
                             >
@@ -210,7 +210,7 @@ export const StickyNavigation = () => {
                             })}
                             <div className="pt-4 border-t border-border/50 space-y-3">
                                 <Button
-                                    onClick={scrollToWaitlist}
+                                    onClick={() => window.open('https://app.vfxb.com/', '_blank')}
                                     variant="outline"
                                     className="w-full bg-gradient-to-r from-cyan-500/10 to-purple-500/10 hover:from-cyan-500/20 hover:to-purple-500/20 border border-cyan-500/30 text-foreground hover:text-cyan-400 shadow-lg hover:shadow-xl transition-all duration-300 py-3"
                                 >
