@@ -19,7 +19,10 @@ View your app in AI Studio: https://ai.studio/apps/drive/1mDYbosaKlckb_gc_bRO0o1
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
-=======
+
 # vfxb-landing-page
 This repository contains the landing page for the VFXB website. Developers working on the landing page should push all related code and updates here.
 
+To run the backend part pls run these two commands 
+cd server 
+node index.js
