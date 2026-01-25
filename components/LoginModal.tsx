@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Lock, User, ArrowRight, ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react';
+import { X, Mail, Lock, User, ArrowRight, ArrowLeft, Loader2, Eye, EyeOff} from 'lucide-react';
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
+import { SiFacebook, SiApple } from '@icons-pack/react-simple-icons';
+
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -61,6 +63,14 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin
     }
   };
   // ----------------------------
+
+  // --- FACEBOOK LOGIN HANDLER ---
+  const handleFacebookLogin = () => {
+    console.log('Facebook login clicked');
+    // UI only for now
+    setError('Facebook login coming soon');
+  };
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -171,7 +181,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin
               </button>
             </form>
 
-            {/* --- GOOGLE BUTTON --- */}
+            {/* --- SOCIAL LOGIN BUTTONS --- */}
             {mode !== 'forgot' && (
               <>
                 <div className="relative my-6">
@@ -179,7 +189,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin
                   <div className="relative flex justify-center text-sm"><span className="px-2 bg-[#16162A] text-gray-500">Or continue with</span></div>
                 </div>
 
-                <div className="flex justify-center">
+                {/* --- GOOGLE--- */} 
+                <div className="flex flex-col items-center  gap-3">
                   <GoogleLogin
                     onSuccess={handleGoogleSuccess}
                     onError={() => setError("Google Login Failed")}
@@ -187,6 +198,27 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin
                     shape="pill"
                     width="250"
                   />
+
+                  {/* --- FACEBOOK --- */}
+                  <button
+                    type="button"
+                    onClick={handleFacebookLogin}
+                    className="w-[250px] flex items-center justify-center gap-2 bg-[#1877F2] hover:opacity-90 text-white font-semibold py-2.5 rounded-full transition"
+                  >
+                    <SiFacebook size={18} />
+                    Continue with Facebook
+                  </button>
+
+                  {/* --- APPLE --- */}
+                  <button
+                    type="button"
+                    onClick={() => setError('Apple login coming soon')}
+                    className="w-[250px] flex items-center justify-center gap-2 bg-black hover:opacity-90 text-white font-semibold py-2.5 rounded-full transition"
+                  >
+                    <SiApple size={18} />
+                    Continue with Apple
+                  </button>
+
                 </div>
               </>
             )}
