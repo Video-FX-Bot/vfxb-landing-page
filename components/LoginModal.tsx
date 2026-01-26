@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Lock, User, ArrowRight, Github, ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react';
+import { X, Mail, Lock, User, ArrowRight, ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react';
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -10,8 +11,8 @@ interface LoginModalProps {
 
 type AuthMode = 'signin' | 'signup' | 'forgot';
 
-// 1. GET THE URL FROM ENV
-const API_URL = import.meta.env.VITE_API_URL;
+// ✅ Uses Environment Variable (Not hardcoded)
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLoginSuccess }) => {
   const [mode, setMode] = useState<AuthMode>('signin');
@@ -22,6 +23,44 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin
   const [showPassword, setShowPassword] = useState(false);
 
   if (!isOpen) return null;
+
+  // --- GOOGLE LOGIN HANDLER ---
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      if (!credentialResponse.credential) {
+        throw new Error("Google token not received");
+      }
+
+      // Send the Google Token to your Backend
+      const response = await fetch(`${API_URL}/api/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: credentialResponse.credential }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Google Authentication failed");
+      }
+
+      // Save user & token
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.result));
+
+      if (onLoginSuccess) onLoginSuccess(data.result);
+      onClose();
+    } catch (err: any) {
+      console.error("Google Login Error:", err);
+      setError(err.message || "Login Failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+  // ----------------------------
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,9 +75,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin
     setSuccessMsg('');
 
     try {
-      // HANDLE FORGOT PASSWORD
+      // 1. Forgot Password
       if (mode === 'forgot') {
-        // 2. USE THE VARIABLE HERE
         const response = await fetch(`${API_URL}/api/forgot-password`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -50,10 +88,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin
         return;
       }
 
-      // HANDLE SIGN IN / SIGN UP
+      // 2. Sign In / Sign Up
       const endpoint = mode === 'signin' ? 'signin' : 'signup';
-      
-      // 3. USE THE VARIABLE HERE
       const response = await fetch(`${API_URL}/api/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,11 +121,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin
     return mode === 'signin' ? 'Welcome Back' : 'Create Account';
   };
 
-  const getDescription = () => {
-    if (mode === 'forgot') return 'Enter your email to receive reset instructions.';
-    return mode === 'signin' ? 'Enter credentials to access workspace.' : 'Join creators going viral.';
-  };
-
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
@@ -101,7 +132,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin
           <div className="p-8 pt-10">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-white mb-2">{getTitle()}</h2>
-              <p className="text-gray-400 text-sm">{getDescription()}</p>
             </div>
 
             {error && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-sm text-center">{error}</div>}
@@ -140,6 +170,26 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin
                 {loading ? <Loader2 className="animate-spin" size={20} /> : <>{mode === 'forgot' ? 'Send Reset Link' : (mode === 'signin' ? 'Sign In' : 'Create Account')} <ArrowRight size={18} /></>}
               </button>
             </form>
+
+            {/* --- GOOGLE BUTTON --- */}
+            {mode !== 'forgot' && (
+              <>
+                <div className="relative my-6">
+                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/10"></div></div>
+                  <div className="relative flex justify-center text-sm"><span className="px-2 bg-[#16162A] text-gray-500">Or continue with</span></div>
+                </div>
+
+                <div className="flex justify-center">
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => setError("Google Login Failed")}
+                    theme="filled_black"
+                    shape="pill"
+                    width="250"
+                  />
+                </div>
+              </>
+            )}
 
             <div className="mt-6 text-center text-sm text-gray-400">
               {mode === 'forgot' ? (
