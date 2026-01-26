@@ -21,6 +21,7 @@ export default function App() {
   const [view, setView] = useState<'landing' | 'analysis' | 'editor' | 'upload'>('landing');
   const [currentVideo, setCurrentVideo] = useState<File | string | null>(null);
   const [isAiFixApplied, setIsAiFixApplied] = useState(false);
+  const [analysisFixesForEditor, setAnalysisFixesForEditor] = useState<string[]>([]);
   
   // --- AUTH STATE ---
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -42,9 +43,10 @@ export default function App() {
     alert("Logged out successfully");
   };
 
-  const handleAnalysisComplete = (file: File | string, isAiFix: boolean) => {
+  const handleAnalysisComplete = (file: File | string, isAiFix: boolean, fixes?: string[]) => {
     setCurrentVideo(file);
     setIsAiFixApplied(isAiFix);
+    setAnalysisFixesForEditor(fixes || []);
     setView('editor');
   };
 
@@ -100,7 +102,7 @@ export default function App() {
 
                 {view === 'editor' && (
                   <motion.div key="editor" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-0 z-50">
-                    <EditorInterface onBack={() => setView('landing')} initialVideoFile={currentVideo} isAiFix={isAiFixApplied} />
+                    <EditorInterface onBack={() => setView('landing')} initialVideoFile={currentVideo} isAiFix={isAiFixApplied} analysisFixes={analysisFixesForEditor} />
                   </motion.div>
                 )}
               </AnimatePresence>

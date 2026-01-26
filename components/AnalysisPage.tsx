@@ -11,7 +11,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 interface AnalysisPageProps {
   onBack: () => void;
-  onAnalysisComplete: (file: File | string, isAiFix: boolean) => void;
+  onAnalysisComplete: (file: File | string, isAiFix: boolean, fixes?: string[]) => void;
 }
 
 interface AnalysisResult {
@@ -56,33 +56,87 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ onBack, onAnalysisCo
     }
   };
 
+  // Helper to extract a single frame from video for quick analysis
+  const extractVideoFrame = (videoFile: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement('video');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      video.onloadedmetadata = () => {
+        // Seek to 25% into the video for a representative frame
+        video.currentTime = video.duration * 0.25;
+      };
+      
+      video.onseeked = () => {
+        canvas.width = Math.min(video.videoWidth, 640); // Cap at 640px for speed
+        canvas.height = Math.min(video.videoHeight, 360);
+        ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+        URL.revokeObjectURL(video.src);
+        resolve(dataUrl.split(',')[1]);
+      };
+      
+      video.onerror = reject;
+      video.src = URL.createObjectURL(videoFile);
+    });
+  };
+
   const startDeepAnalysis = async (uploadedFile: File) => {
     setStep('analyzing');
     setProgress(5);
-    setStatusText("Deep Neural Scanning...");
+    setStatusText("Initializing neural scan...");
+
+    // Fast progress for quick analysis
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        if (prev < 30) { setStatusText("Extracting key frame..."); return prev + 8; }
+        if (prev < 60) { setStatusText("Analyzing content..."); return prev + 6; }
+        if (prev < 85) { setStatusText("AI Processing..."); return prev + 4; }
+        return prev;
+      });
+    }, 150); // Faster interval
 
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       
-      const reader = new FileReader();
-      const base64Promise = new Promise<string>((resolve) => {
-        reader.onload = () => resolve((reader.result as string).split(',')[1]);
-        reader.readAsDataURL(uploadedFile);
-      });
-      const base64Data = await base64Promise;
+      // For large videos (>10MB), extract a frame instead of sending full video
+      const fileSizeMB = uploadedFile.size / (1024 * 1024);
+      let base64Data: string;
+      let mimeType: string;
+      
+      if (fileSizeMB > 10) {
+        // Extract a representative frame for faster analysis
+        setStatusText("Extracting key frame...");
+        base64Data = await extractVideoFrame(uploadedFile);
+        mimeType = 'image/jpeg';
+      } else {
+        // For smaller videos, send the full video
+        const reader = new FileReader();
+        const base64Promise = new Promise<string>((resolve) => {
+          reader.onload = () => resolve((reader.result as string).split(',')[1]);
+          reader.readAsDataURL(uploadedFile);
+        });
+        base64Data = await base64Promise;
+        mimeType = uploadedFile.type;
+      }
 
       const response = await ai.models.generateContent({
-        model: "gemini-3-pro-preview",
+        model: "gemini-2.0-flash", // Much faster than pro model
         contents: {
           parts: [
-            { text: "Analyze this video for its viral potential. Provide a detailed summary, viral score (0-100), hook analysis, visual quality check, strengths, weaknesses, and exactly 5 actionable AI-implementable fixes (e.g., color grading, zoom points, audio normalization). Return strictly valid JSON with no markdown blocks. Keep text concise. Structure: {summary, viralScore, hookAnalysis, visualQuality, weaknesses: [], strengths: [], fixes: []}" },
-            { inlineData: { mimeType: uploadedFile.type, data: base64Data } }
+            { text: `Analyze this ${fileSizeMB > 10 ? 'video frame' : 'video'} for viral potential. Be concise. Return JSON only: {summary: string, viralScore: 0-100, hookAnalysis: string, visualQuality: string, weaknesses: string[], strengths: string[], fixes: string[]}. Include 5 actionable fixes like color grading, zoom points, audio normalization.` },
+            { inlineData: { mimeType, data: base64Data } }
           ]
         },
         config: { 
           responseMimeType: "application/json"
         }
       });
+
+      clearInterval(progressInterval);
+      setProgress(90);
+      setStatusText("Processing AI response...");
 
       const text = response.text?.trim() || "{}";
       const analysisData: AnalysisResult = JSON.parse(text);
@@ -100,6 +154,7 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ onBack, onAnalysisCo
       setStatusText("Report Generated.");
       setTimeout(() => setStep('results'), 800);
     } catch (error) {
+      clearInterval(progressInterval);
       console.error("Analysis failed:", error);
       setStatusText("Analysis failed. Try a smaller clip.");
       setTimeout(() => setStep('upload'), 3000);
@@ -327,10 +382,16 @@ export const AnalysisPage: React.FC<AnalysisPageProps> = ({ onBack, onAnalysisCo
                     </div>
                     <div className="pt-8 border-t border-white/5">
                         <button 
-                          onClick={() => file && onAnalysisComplete(file, false)}
-                          className="w-full bg-white/5 border border-white/10 hover:bg-white/10 py-6 rounded-[24px] font-black text-white text-xs uppercase tracking-widest flex items-center justify-center gap-4 transition-all hover:border-brand-accent/40"
+                          onClick={() => file && onAnalysisComplete(file, true, result.fixes)}
+                          className="w-full btn-gradient py-6 rounded-[24px] font-black text-white text-xs uppercase tracking-widest flex items-center justify-center gap-4 transition-all hover:scale-[1.02] shadow-2xl"
                         >
-                          Manual Edit in Studio <Scissors size={20} />
+                          <Wand2 size={20} /> Apply AI Edits in Studio
+                        </button>
+                        <button 
+                          onClick={() => file && onAnalysisComplete(file, false)}
+                          className="w-full mt-4 bg-white/5 border border-white/10 hover:bg-white/10 py-4 rounded-[24px] font-medium text-gray-400 text-xs flex items-center justify-center gap-3 transition-all hover:text-white"
+                        >
+                          Skip AI Edits — Manual Edit Only <Scissors size={16} />
                         </button>
                     </div>
                   </div>
