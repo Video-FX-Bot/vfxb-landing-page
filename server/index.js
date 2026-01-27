@@ -5,6 +5,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const { OAuth2Client } = require('google-auth-library'); // Import Google Lib
+const msal = require('@azure/msal-node');               // Microsoft
+const fetch = require('node-fetch');                    // For Microsoft Graph
+
 require('dotenv').config();
 
 const app = express();
@@ -24,10 +27,23 @@ const PORT = process.env.PORT || 5000;
 const MONGO_URL = process.env.MONGO_URL;
 const JWT_SECRET = process.env.JWT_SECRET;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID; // Must match Frontend ID
+const MICROSOFT_CLIENT_ID = process.env.MICROSOFT_CLIENT_ID;
+const MICROSOFT_CLIENT_SECRET = process.env.MICROSOFT_CLIENT_SECRET;
+const MICROSOFT_REDIRECT_URI = process.env.MICROSOFT_REDIRECT_URI;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
 
 // --- GOOGLE CLIENT SETUP ---
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
+
+// --- MICROSOFT CLIENT SETUP ---
+const msalConfig = {
+  auth: {
+    clientId: MICROSOFT_CLIENT_ID,
+    authority: 'https://login.microsoftonline.com/common',
+    clientSecret: MICROSOFT_CLIENT_SECRET,
+  },
+};
+const cca = new msal.ConfidentialClientApplication(msalConfig);
 
 // --- DATABASE CONNECTION ---
 mongoose.connect(MONGO_URL)
@@ -141,7 +157,61 @@ app.post('/api/auth/google', async (req, res) => {
   }
 });
 
-// 4. FORGOT PASSWORD
+
+// 4. MICROSOFT AUTH LOGIN URL
+app.get('/api/auth/microsoft/url', (req, res) => {
+  const authCodeUrlParameters = {
+    scopes: ["user.read"],
+    redirectUri: MICROSOFT_REDIRECT_URI,
+  };
+
+  cca.getAuthCodeUrl(authCodeUrlParameters)
+    .then((url) => res.json({ url }))
+    .catch((error) => {
+      console.error("Microsoft Auth URL Error:", error);
+      res.status(500).json({ message: "Failed to get Microsoft login URL" });
+    });
+});
+
+// 5. MICROSOFT AUTH CALLBACK (returns JWT in JSON)
+app.get('/api/auth/microsoft/callback', async (req, res) => {
+  const authCode = req.query.code;
+  const tokenRequest = { code: authCode, scopes: ["user.read"], redirectUri: MICROSOFT_REDIRECT_URI };
+
+  try {
+    // 1️⃣ Exchange auth code for access token
+    const response = await cca.acquireTokenByCode(tokenRequest);
+    const accessToken = response.accessToken;
+
+    // 2️⃣ Fetch user profile from Microsoft Graph
+    const graphResponse = await fetch('https://graph.microsoft.com/v1.0/me', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    const userData = await graphResponse.json();
+
+    const email = userData.mail || userData.userPrincipalName;
+    const name = userData.displayName;
+
+    // 3️⃣ Check if user exists in DB, create if not
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = await User.create({ name, email, profilePicture: null });
+    }
+
+    // 4️⃣ Generate JWT
+    const jwtToken = jwt.sign({ email: user.email, id: user._id }, JWT_SECRET, { expiresIn: '1h' });
+
+    // 5️⃣ Return user info + JWT in JSON (like Google login)
+    res.status(200).json({ result: user, token: jwtToken });
+
+  } catch (error) {
+    console.error("Microsoft Auth Error:", error);
+    res.status(401).json({ message: "Microsoft login failed" });
+  }
+});
+
+
+// 6. FORGOT PASSWORD
 app.post('/api/forgot-password', async (req, res) => {
   const { email } = req.body;
   try {
@@ -170,7 +240,7 @@ app.post('/api/forgot-password', async (req, res) => {
   }
 });
 
-// 5. RESET PASSWORD
+// 7. RESET PASSWORD
 app.post('/api/reset-password/:token', async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
