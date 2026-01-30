@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Play, TrendingUp, Zap, BarChart3 } from 'lucide-react';
@@ -6,9 +5,28 @@ import { Play, TrendingUp, Zap, BarChart3 } from 'lucide-react';
 interface HeroProps {
   onStartAnalysis: () => void;
   onOpenEditor: () => void;
+  user: any;                 // <--- 1. Add user prop
+  onOpenLogin: () => void;   // <--- 2. Add login opener prop
 }
 
-export const Hero: React.FC<HeroProps> = ({ onStartAnalysis, onOpenEditor }) => {
+export const Hero: React.FC<HeroProps> = ({ 
+  onStartAnalysis, 
+  onOpenEditor, 
+  user,           // <--- Destructure here
+  onOpenLogin     // <--- Destructure here
+}) => {
+
+  // <--- 3. Helper function to handle the click
+  const handleAnalyzeClick = () => {
+    if (user) {
+      // If user is logged in, proceed to editor
+      onOpenEditor();
+    } else {
+      // If NOT logged in, open the login modal
+      onOpenLogin();
+    }
+  };
+
   return (
     <div className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
       {/* Animated Background Mesh */}
@@ -20,7 +38,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartAnalysis, onOpenEditor }) => 
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
       </div>
 
-      {/* Periphery Floating Elements - Adjusted to be 'a little centered' */}
+      {/* Periphery Floating Elements */}
       <div className="absolute top-[28%] left-[8%] hidden xl:block z-20 animate-float pointer-events-none">
          <GlassCard 
             icon={<TrendingUp className="text-brand-accent" />} 
@@ -85,7 +103,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartAnalysis, onOpenEditor }) => 
           className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center"
         >
           <button 
-            onClick={onOpenEditor}
+            onClick={handleAnalyzeClick} // <--- 4. Attached the logic here
             className="w-full sm:w-auto group relative px-8 py-4 rounded-xl font-bold text-white overflow-hidden shadow-xl shadow-purple-500/20 hover:shadow-purple-500/40 transition-all"
           >
             <div className="absolute inset-0 btn-gradient transition-transform duration-300 group-hover:scale-110"></div>
